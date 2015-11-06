@@ -1,0 +1,66 @@
+#Author: Aditya Shibrady Padmanabha
+#AXS142431
+
+library(rpart)
+data("solder")
+classtrees <- rpart(Solder~., data = solder, method = "class", parms = list(split = 'information'), minsplit = 1, minbucket = 1)
+print(classtrees)
+classtrees$variable.importance
+jpeg("solder.jpg")
+par(mar = rep(0.1, 4))
+plot(classtrees,uniform=TRUE,main="Classification Tree for Solder")
+text(classtrees,use.n=TRUE, all=TRUE, cex=.8)
+dev.off()
+summary(classtrees)
+printcp(classtrees)
+treepruned <- prune(classtrees,cp=0.010000)
+jpeg("solderprune.jpg")
+plot(treepruned,uniform=TRUE,main="Pruned Tree for Solder")
+text(treepruned,use.n=TRUE, all=TRUE, cex=.8)
+dev.off()
+nrow(solder)
+training80 <- sample(nrow(solder),size =576 )
+training_set80 <- solder[training80,]
+test_set80 <- solder[-training80,]
+traintree80 <- rpart(Solder~., data = training_set80, method = "class", parms = list(split = 'information'), minsplit = 1, minbucket = 1)
+print(traintree80)
+traintree80$variable.importance
+jpeg("solder80.jpg")
+par(mar = rep(0.1, 4))
+plot(traintree80,uniform=TRUE,main="Classification Tree for 80% split")
+text(traintree80,use.n=TRUE, all=TRUE, cex=.8)
+dev.off()
+summary(traintree80)
+printcp(traintree80)
+trianprune80 <- prune(traintree80,cp=0.010000)
+jpeg("solderpurne80.jpg")
+plot(trianprune80,uniform=TRUE,main="Pruned Tree for 80% split")
+text(trianprune80,use.n=TRUE, all=TRUE, cex=.8)
+dev.off()
+predict80 <- predict(traintree80,test_set80,type = "class")
+print(predict80)
+accuracy<- table(predict80,test_set80$Solder)
+sum(diag(accuracy))/sum(accuracy) *100
+nrow(solder)
+training90 <- sample(nrow(solder),size =648 )
+training_set90 <- solder[training90,]
+test_set90 <- solder[-training90,]
+traintree90 <- rpart(Solder~., data = training_set90, method = "class", parms = list(split = 'information'), minsplit = 1, minbucket = 1)
+print(traintree90)
+traintree90$variable.importance
+jpeg("solder90.jpg")
+par(mar = rep(0.1, 4))
+plot(traintree90,uniform=TRUE,main="Classification Tree for 90% split")
+text(traintree90,use.n=TRUE, all=TRUE, cex=.8)
+dev.off()
+summary(traintree90)
+printcp(traintree90)
+trianprune90 <- prune(traintree90,cp=0.010000)
+jpeg("solderpurne90.jpg")
+plot(trianprune90,uniform=TRUE,main="Pruned Tree for 90% split")
+text(trianprune90,use.n=TRUE, all=TRUE, cex=.8)
+dev.off()
+predict90 <- predict(traintree90,test_set90,type = "class")
+print(predict90)
+accuracy<- table(predict90,test_set90$Solder)
+sum(diag(accuracy))/sum(accuracy) *100
